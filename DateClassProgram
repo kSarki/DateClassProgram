@@ -1,0 +1,59 @@
+#include <iostream>
+#include <string>
+
+class Date {
+private:
+    int month;
+    int day;
+    int year;
+
+    // Helper function to check if a year is a leap year
+    bool isLeapYear(int y) const {
+        return (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
+    }
+
+    // Helper function to get the last day of a month
+    int lastDay(int m, int y) const {
+        if (m == 2 && isLeapYear(y)) return 29;
+        int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        return daysInMonth[m - 1];
+    }
+
+public:
+    // Constructor to initialize the date
+    Date(int m = 1, int d = 1, int y = 1900) {
+        if (m < 1 || m > 12) {
+            month = 1;
+            day = 1;
+            year = 1900;
+        } else {
+            month = m;
+            year = (y > 0) ? y : 1900;
+            day = (d >= 1 && d <= lastDay(m, y)) ? d : 1;
+        }
+    }
+
+    // Function to print the date in MM/DD/YYYY format
+    std::string printDate1() const {
+        return std::to_string(month) + "/" + std::to_string(day) + "/" + std::to_string(year);
+    }
+
+    // Function to print the date in Month DD, YYYY format
+    std::string printDate2() const {
+        const std::string months[] = { "", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        return months[month] + " " + std::to_string(day) + ", " + std::to_string(year);
+    }
+};
+
+int main() {
+    // Test the simplified Date class
+    Date date(2, 29, 2020);  // A leap year
+    std::cout << "Date in MM/DD/YYYY: " << date.printDate1() << std::endl;
+    std::cout << "Date in Month DD, YYYY: " << date.printDate2() << std::endl;
+
+    Date invalidDate(2, 30, 2020);  // Invalid date
+    std::cout << "Invalid Date in MM/DD/YYYY: " << invalidDate.printDate1() << std::endl;
+    std::cout << "Invalid Date in Month DD, YYYY: " << invalidDate.printDate2() << std::endl;
+
+    return 0;
+}

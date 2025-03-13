@@ -12,24 +12,32 @@ private:
         return (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
     }
 
-    // Helper function to get the last day of a month
+    // Helper function to get the last valid day of a month
     int lastDay(int m, int y) const {
-        if (m == 2 && isLeapYear(y)) return 29;
-        int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if (m == 2) return isLeapYear(y) ? 29 : 28;
+        int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
         return daysInMonth[m - 1];
     }
 
 public:
     // Constructor to initialize the date
     Date(int m = 1, int d = 1, int y = 1900) {
+        year = (y > 0) ? y : 1900; // Ensure year is valid
+
         if (m < 1 || m > 12) {
+            std::cout << "Invalid month provided. Defaulting to January.\n";
             month = 1;
-            day = 1;
-            year = 1900;
         } else {
             month = m;
-            year = (y > 0) ? y : 1900;
-            day = (d >= 1 && d <= lastDay(m, y)) ? d : 1;
+        }
+
+        // Validate day, adjust if out of range
+        int maxDay = lastDay(month, year);
+        if (d < 1 || d > maxDay) {
+            std::cout << "Invalid day provided. Setting day to last valid day of the month (" << maxDay << ").\n";
+            day = maxDay;
+        } else {
+            day = d;
         }
     }
 
@@ -46,14 +54,19 @@ public:
 };
 
 int main() {
-    // Test the simplified Date class
-    Date date(2, 29, 2020);  // A leap year
-    std::cout << "Date in MM/DD/YYYY: " << date.printDate1() << std::endl;
-    std::cout << "Date in Month DD, YYYY: " << date.printDate2() << std::endl;
+    // Test cases
+    Date date1(2, 29, 2020);  // Valid leap year date
+    std::cout << "Valid Date (Leap Year): " << date1.printDate1() << " | " << date1.printDate2() << std::endl;
 
-    Date invalidDate(2, 30, 2020);  // Invalid date
-    std::cout << "Invalid Date in MM/DD/YYYY: " << invalidDate.printDate1() << std::endl;
-    std::cout << "Invalid Date in Month DD, YYYY: " << invalidDate.printDate2() << std::endl;
+    Date date2(2, 30, 2020);  // Invalid day in a leap year
+    std::cout << "Adjusted Invalid Date: " << date2.printDate1() << " | " << date2.printDate2() << std::endl;
+
+    Date date3(13, 15, 2022); // Invalid month
+    std::cout << "Invalid Month: " << date3.printDate1() << " | " << date3.printDate2() << std::endl;
+
+    Date date4(4, 31, 2023); // Invalid day (April has only 30 days)
+    std::cout << "Invalid Day: " << date4.printDate1() << " | " << date4.printDate2() << std::endl;
 
     return 0;
 }
+

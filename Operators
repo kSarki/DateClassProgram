@@ -30,7 +30,21 @@ private:
 
 public:
     // Constructor
-    Date(int m = 1, int d = 1, int y = 2000) : month(m), day(d), year(y) {}
+    Date(int m = 1, int d = 1, int y = 2000) {
+        setDate(m, d, y);
+    }
+
+    // Function to validate and set date
+    bool setDate(int m, int d, int y) {
+        if (m < 1 || m > 12 || d < 1 || d > lastDay(m, y) || y < 1) {
+            std::cerr << "Invalid date!" << std::endl;
+            return false;
+        }
+        month = m;
+        day = d;
+        year = y;
+        return true;
+    }
 
     // Prefix increment (++d)
     Date& operator++() {
@@ -92,11 +106,13 @@ public:
 
     // Input stream operator (>>) for reading dates
     friend std::istream& operator>>(std::istream& in, Date& d) {
+        int m, d_, y;
         char slash;
-        in >> d.month >> slash >> d.day >> slash >> d.year;
-        if (d.month < 1 || d.month > 12) d.month = 1;
-        int maxDay = d.lastDay(d.month, d.year);
-        if (d.day < 1 || d.day > maxDay) d.day = maxDay;
+        in >> m >> slash >> d_ >> slash >> y;
+        if (!d.setDate(m, d_, y)) {
+            std::cerr << "Invalid input. Resetting to default (1/1/2000)." << std::endl;
+            d.setDate(1, 1, 2000);
+        }
         return in;
     }
 };
@@ -123,3 +139,9 @@ int main() {
 
     return 0;
 }
+
+
+
+   
+   
+   

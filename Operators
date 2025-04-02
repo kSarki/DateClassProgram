@@ -5,18 +5,15 @@ class Date {
 private:
     int day, month, year;
 
-    // Helper function to check if a year is a leap year
     bool isLeapYear(int y) const {
         return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
     }
 
-    // Helper function to get last day of a month
     int lastDay(int m, int y) const {
         const int daysInMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
         return (m == 2 && isLeapYear(y)) ? 29 : daysInMonth[m];
     }
 
-    // Helper function to convert date to total days (for subtraction)
     int convertToDays() const {
         int total = day;
         for (int y = 1; y < year; y++) {
@@ -29,12 +26,8 @@ private:
     }
 
 public:
-    // Constructor
-    Date(int m = 1, int d = 1, int y = 2000) {
-        setDate(m, d, y);
-    }
+    Date(int m = 1, int d = 1, int y = 2000) { setDate(m, d, y); }
 
-    // Function to validate and set date
     bool setDate(int m, int d, int y) {
         if (m < 1 || m > 12 || d < 1 || d > lastDay(m, y) || y < 1) {
             std::cerr << "Invalid date!" << std::endl;
@@ -46,7 +39,6 @@ public:
         return true;
     }
 
-    // Prefix increment (++d)
     Date& operator++() {
         if (day == lastDay(month, year)) {
             day = 1;
@@ -62,14 +54,12 @@ public:
         return *this;
     }
 
-    // Postfix increment (d++)
     Date operator++(int) {
         Date temp = *this;
         ++(*this);
         return temp;
     }
 
-    // Prefix decrement (--d)
     Date& operator--() {
         if (day == 1) {
             if (month == 1) {
@@ -85,26 +75,22 @@ public:
         return *this;
     }
 
-    // Postfix decrement (d--)
     Date operator--(int) {
         Date temp = *this;
         --(*this);
         return temp;
     }
 
-    // Subtracting two Date objects (returns days between them)
     int operator-(const Date& other) const {
         return std::abs(convertToDays() - other.convertToDays());
     }
 
-    // Output stream operator (<<) for printing dates
     friend std::ostream& operator<<(std::ostream& out, const Date& d) {
         const std::string months[] = { "", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
         out << months[d.month] << " " << d.day << ", " << d.year;
         return out;
     }
 
-    // Input stream operator (>>) for reading dates
     friend std::istream& operator>>(std::istream& in, Date& d) {
         int m, d_, y;
         char slash;
@@ -117,31 +103,60 @@ public:
     }
 };
 
-// Main function for testing
 int main() {
-    Date d1(12, 31, 2024);
-    std::cout << "Original date: " << d1 << std::endl;
-
-    d1++; // Post-increment
-    std::cout << "After post-increment: " << d1 << std::endl;
-
-    --d1; // Pre-decrement
-    std::cout << "After pre-decrement: " << d1 << std::endl;
-
+    std::cout << "--- TEST CASES ---\n";
+    
+    Date d1;
+    std::cout << "Default constructor: " << d1 << "\n";
+    
     Date d2(4, 10, 2014);
+    std::cout << "Constructor with parameters: " << d2 << "\n";
+    
+    d2.setDate(5, 20, 2020);
+    std::cout << "setDate() to valid date: " << d2 << "\n";
+    
+    d2.setDate(13, 45, 2018);
+    d2.setDate(4, 31, 2000);
+    d2.setDate(2, 29, 2009);
+    
     Date d3(4, 18, 2014);
-    std::cout << "Days between: " << (d3 - d2) << " days" << std::endl;
-
+    std::cout << "Days between 4/10/2014 and 4/18/2014: " << (d3 - d2) << " days\n";
+    
+    Date d4(2, 2, 2006), d5(11, 10, 2003);
+    std::cout << "Days between 2/2/2006 and 11/10/2003: " << (d4 - d5) << " days\n";
+    
+    Date leap(2, 29, 2008);
+    --leap;
+    std::cout << "Pre-decrement 2/29/2008: " << leap << "\n";
+    ++leap;
+    std::cout << "Pre-increment back: " << leap << "\n";
+    leap--;
+    std::cout << "Post-decrement 2/29/2008: " << leap << "\n";
+    leap++;
+    std::cout << "Post-increment back: " << leap << "\n";
+    
+    Date yearEnd(12, 31, 2024);
+    yearEnd++;
+    std::cout << "Post-increment 12/31/2024: " << yearEnd << "\n";
+    yearEnd--;
+    std::cout << "Post-decrement back: " << yearEnd << "\n";
+    
+    ++yearEnd;
+    std::cout << "Pre-increment 12/31/2024: " << yearEnd << "\n";
+    --yearEnd;
+    std::cout << "Pre-decrement back: " << yearEnd << "\n";
+    
     std::cout << "Enter a date (MM/DD/YYYY): ";
-    Date d4;
-    std::cin >> d4;
-    std::cout << "You entered: " << d4 << std::endl;
+    Date inputDate;
+    std::cin >> inputDate;
+    std::cout << "You entered: " << inputDate << "\n";
 
     return 0;
 }
 
 
 
+   
    
    
    
